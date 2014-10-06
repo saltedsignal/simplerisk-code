@@ -1,128 +1,121 @@
 <?php
-        /* This Source Code Form is subject to the terms of the Mozilla Public
-         * License, v. 2.0. If a copy of the MPL was not distributed with this
-         * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+  /* This Source Code Form is subject to the terms of the Mozilla Public
+   * License, v. 2.0. If a copy of the MPL was not distributed with this
+   * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-        // Include required functions file
-        require_once(realpath(__DIR__ . '/../includes/functions.php'));
-        require_once(realpath(__DIR__ . '/../includes/authenticate.php'));
+  // Include required functions file
+  require_once(realpath(__DIR__ . '/../includes/functions.php'));
+  require_once(realpath(__DIR__ . '/../includes/authenticate.php'));
 	require_once(realpath(__DIR__ . '/../includes/display.php'));
 
-        // Add various security headers
-        header("X-Frame-Options: DENY");
-        header("X-XSS-Protection: 1; mode=block");
+  // Add various security headers
+  header("X-Frame-Options: DENY");
+  header("X-XSS-Protection: 1; mode=block");
 
-        // If we want to enable the Content Security Policy (CSP) - This may break Chrome
-        if (CSP_ENABLED == "true")
-        {
-                // Add the Content-Security-Policy header
-                header("Content-Security-Policy: default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'");
-        }
+  // If we want to enable the Content Security Policy (CSP) - This may break Chrome
+  if (CSP_ENABLED == "true")
+  {
+    // Add the Content-Security-Policy header
+    header("Content-Security-Policy: default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'");
+  }
 
-        // Session handler is database
-        if (USE_DATABASE_FOR_SESSIONS == "true")
-        {
-		session_set_save_handler('sess_open', 'sess_close', 'sess_read', 'sess_write', 'sess_destroy', 'sess_gc');
-        }
+  // Session handler is database
+  if (USE_DATABASE_FOR_SESSIONS == "true")
+  {
+    session_set_save_handler('sess_open', 'sess_close', 'sess_read', 'sess_write', 'sess_destroy', 'sess_gc');
+  }
 
-        // Start the session
+  // Start the session
 	session_set_cookie_params(0, '/', '', isset($_SERVER["HTTPS"]), true);
-        session_start('SimpleRisk');
+  session_start('SimpleRisk');
 
-        // Include the language file
-        require_once(language_file());
+  // Include the language file
+  require_once(language_file());
 
-        require_once(realpath(__DIR__ . '/../includes/csrf-magic/csrf-magic.php'));
+  require_once(realpath(__DIR__ . '/../includes/csrf-magic/csrf-magic.php'));
 
-        // Check for session timeout or renegotiation
-        session_check();
+  // Check for session timeout or renegotiation
+  session_check();
 
-        // Check if access is authorized
-        if (!isset($_SESSION["access"]) || $_SESSION["access"] != "granted")
-        {
-                header("Location: ../index.php");
-                exit(0);
-        }
+  // Check if access is authorized
+  if (!isset($_SESSION["access"]) || $_SESSION["access"] != "granted")
+  {
+    header("Location: ../index.php");
+    exit(0);
+  }
 ?>
 
 <html>
 <head>
-<title>SimpleRisk CVSS Calculator</title>
-<link rel="stylesheet" type="text/css" href="../css/style.css">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link href="../css/front-style.css" rel="stylesheet" type="text/css">
-<script language="javascript" src="../js/basescript.js" type="text/javascript"></script>
-<script language="javascript" src="../js/cvss_scoring.js" type="text/javascript"></script>
-<script type="text/javascript" language="JavaScript">
-  <!--
-  var parent_window = window.opener;
+  <title>SimpleRisk CVSS Calculator</title>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link href="../css/front-style.css" rel="stylesheet" type="text/css">
+  <script language="javascript" src="../js/basescript.js" type="text/javascript"></script>
+  <script language="javascript" src="../js/cvss_scoring.js" type="text/javascript"></script>
+  <script type="text/javascript" language="JavaScript">
+    <!--
+    var parent_window = window.opener;
 
-  function cvssSubmit() {
-    if (parent_window && !parent_window.closed) {
-      parent_window.document.getElementById('AccessVector').value=this.document.getElementById('AccessVector').value;
-      parent_window.document.getElementById('AccessComplexity').value=this.document.getElementById('AccessComplexity').value;
-      parent_window.document.getElementById('Authentication').value=this.document.getElementById('Authentication').value;
-      parent_window.document.getElementById('ConfImpact').value=this.document.getElementById('ConfImpact').value;
-      parent_window.document.getElementById('IntegImpact').value=this.document.getElementById('IntegImpact').value;
-      parent_window.document.getElementById('AvailImpact').value=this.document.getElementById('AvailImpact').value;
-      parent_window.document.getElementById('Exploitability').value=this.document.getElementById('Exploitability').value;
-      parent_window.document.getElementById('RemediationLevel').value=this.document.getElementById('RemediationLevel').value;
-      parent_window.document.getElementById('ReportConfidence').value=this.document.getElementById('ReportConfidence').value;
-      parent_window.document.getElementById('CollateralDamagePotential').value=this.document.getElementById('CollateralDamagePotential').value;
-      parent_window.document.getElementById('TargetDistribution').value=this.document.getElementById('TargetDistribution').value;
-      parent_window.document.getElementById('ConfidentialityRequirement').value=this.document.getElementById('ConfidentialityRequirement').value;
-      parent_window.document.getElementById('IntegrityRequirement').value=this.document.getElementById('IntegrityRequirement').value;
-      parent_window.document.getElementById('AvailabilityRequirement').value=this.document.getElementById('AvailabilityRequirement').value;
+    function cvssSubmit() {
+      if (parent_window && !parent_window.closed) {
+        parent_window.document.getElementById('AccessVector').value=this.document.getElementById('AccessVector').value;
+        parent_window.document.getElementById('AccessComplexity').value=this.document.getElementById('AccessComplexity').value;
+        parent_window.document.getElementById('Authentication').value=this.document.getElementById('Authentication').value;
+        parent_window.document.getElementById('ConfImpact').value=this.document.getElementById('ConfImpact').value;
+        parent_window.document.getElementById('IntegImpact').value=this.document.getElementById('IntegImpact').value;
+        parent_window.document.getElementById('AvailImpact').value=this.document.getElementById('AvailImpact').value;
+        parent_window.document.getElementById('Exploitability').value=this.document.getElementById('Exploitability').value;
+        parent_window.document.getElementById('RemediationLevel').value=this.document.getElementById('RemediationLevel').value;
+        parent_window.document.getElementById('ReportConfidence').value=this.document.getElementById('ReportConfidence').value;
+        parent_window.document.getElementById('CollateralDamagePotential').value=this.document.getElementById('CollateralDamagePotential').value;
+        parent_window.document.getElementById('TargetDistribution').value=this.document.getElementById('TargetDistribution').value;
+        parent_window.document.getElementById('ConfidentialityRequirement').value=this.document.getElementById('ConfidentialityRequirement').value;
+        parent_window.document.getElementById('IntegrityRequirement').value=this.document.getElementById('IntegrityRequirement').value;
+        parent_window.document.getElementById('AvailabilityRequirement').value=this.document.getElementById('AvailabilityRequirement').value;
+      }
     }
-  }
 
-  function closeWindow() {
-    window.opener.closepopup();
-  }
+    function closeWindow() {
+      window.opener.closepopup();
+    }
 
-  function submitandclose() {
-    cvssSubmit();
-    closeWindow();
-  }
-
-  // -->
-</script>
+    function submitandclose() {
+      cvssSubmit();
+      closeWindow();
+    }
+    // -->
+  </script>
 </head>
-
-<body topmargin="0" bottommargin="4" leftmargin="0" rightmargin="0" ><form name="frmCalc" method="post" action="" >
-          
-<table width="672" border="0" cellpadding="1" cellspacing="0">
-	
-  <tr>
-    <td align="left" valign="top"  bgcolor="#6B7782" >
-      <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
-      	<tr>
-	  <td align="center" background="../images/cal-bg-head.jpg" height="35"><span class="heading">SimpleRisk CVSS V2.0 Calculator</span></td>
-    </tr>
-    
-    
+<body topmargin="0" bottommargin="4" leftmargin="0" rightmargin="0" >
+  <form name="frmCalc" method="post" action="" >          
+    <table width="672" border="0" cellpadding="1" cellspacing="0">	
     <tr>
-	  <td align="left"  height="8"></td>
-	  </tr>
-    
-    
-	<tr>
-    	<td align="left" style="padding-left:10px; padding-right:10px" height="35">This page provides a calculator for creating <A href="http://www.first.org/cvss/" target="_blank">CVSS</A> vulnerability severity scores.  The scores are computed in sequence such that the Base Score is used to calculate the Temporal Score and the Temporal Score is used to calculate the Environmental Score.</td>
-    </tr>
-	<tr>
-	  <td align="left"  height="8"></td>
-	  </tr>
-        <tr>
-          <td><table border="0" cellspacing="0" cellpadding="0">
+      <td align="left" valign="top"  bgcolor="#6B7782" >
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+        	<tr>
+      	    <td align="center" background="../images/cal-bg-head.jpg" height="35"><span class="heading">SimpleRisk CVSS V2.0 Calculator</span></td>
+          </tr>    
+          <tr>
+      	    <td align="left"  height="8"></td>
+      	  </tr>   
+	        <tr>
+    	      <td align="left" style="padding-left:10px; padding-right:10px" height="35">This page provides a calculator for creating <A href="http://www.first.org/cvss/" target="_blank">CVSS</A> vulnerability severity scores.  The scores are computed in sequence such that the Base Score is used to calculate the Temporal Score and the Temporal Score is used to calculate the Environmental Score.</td>
+          </tr>
+	        <tr>
+	          <td align="left"  height="8"></td>
+	        </tr>
+          <tr>
+            <td><table border="0" cellspacing="0" cellpadding="0">
             <tr>
               <td valign="top">
               <table width="500" border="0" align="right" cellpadding="0" cellspacing="0">
-
-                  <tr bordercolor="#CCCCCC">
-                    <td background="../images/cal-bg.jpg"><span class="style2" style="background-repeat:no-repeat">&nbsp;&nbsp;CVSS Score</span></td>
-                  </tr>
-                  <tr>
-                    <td  style="padding-left:5px; padding-right:5px;" ><table width="100%" border="0" cellpadding="1" cellspacing="1">
+                <tr bordercolor="#CCCCCC">
+                  <td background="../images/cal-bg.jpg"><span class="style2" style="background-repeat:no-repeat">&nbsp;&nbsp;CVSS Score</span></td>
+                </tr>
+                <tr>
+                  <td  style="padding-left:5px; padding-right:5px;" >
+                    <table width="100%" border="0" cellpadding="1" cellspacing="1">
                       <tr>
                         <td >CVSS Base Score</td>
                         <td ><div id="BaseScore">0</div></td>
@@ -143,20 +136,22 @@
                         <td height="20">CVSS&nbsp;Environmental&nbsp;Score</td>
                         <td ><div id="EnvironmentalScore">0</div></td>
                       </tr>
-                    </table></td>
-                  </tr>
-                  <tr>
-                    <td height="4"></td>
-                  </tr>
-                  <tr bordercolor="#CCCCCC">
-                    <td background="../images/cal-bg.jpg"><span class="style2" style="background-repeat:no-repeat">&nbsp;&nbsp;Help Desk</span></td>
-                  </tr>
-                  <tr>
-                    <td  style="padding-left:5px; padding-right:5px;" >
-                      <?php view_cvss_help(); ?>
-                    </td>
-                  </tr>
-              </table></td>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="4"></td>
+                </tr>
+                <tr bordercolor="#CCCCCC">
+                  <td background="../images/cal-bg.jpg"><span class="style2" style="background-repeat:no-repeat">&nbsp;&nbsp;Help Desk</span></td>
+                </tr>
+                <tr>
+                  <td  style="padding-left:5px; padding-right:5px;" >
+                    <?php view_cvss_help(); ?>
+                  </td>
+                </tr>
+              </table>
+              </td>
               <td background="../images/separetor.jpg" ><img src="../images/separetor.jpg"></td>
               <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
                   <tr>
@@ -366,8 +361,8 @@
           </table></td>
         </tr>
       </table></td>
-  </tr>
-</table>
-</form>
+    </tr>
+    </table>
+  </form>
 </body>
 </html>

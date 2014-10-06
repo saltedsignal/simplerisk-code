@@ -1,12 +1,11 @@
 <?php
-
 // Include the language file
 require_once(language_file());
 
 function get_plan_mitigations()
 {
         global $lang;
-	echo "<div class=\"row-fluid\">\n";
+        echo "<div class=\"row-fluid\">\n";
         echo "<div class=\"span12\">\n";
         echo "<p>". $lang['MitigationPlanningHelp'] ."</p>\n";
         get_risk_table(1);
@@ -441,7 +440,6 @@ function get_close($id, $calculated_risk, $subject, $status)
         
 }
 
-
 function get_comment($id, $calculated_risk, $subject, $status)
 {
         global $lang;
@@ -462,7 +460,6 @@ function get_comment($id, $calculated_risk, $subject, $status)
         echo "</form>\n";
         echo "</div>\n";
         echo "</div>\n";
-        
 }
 
 
@@ -546,6 +543,4 @@ function get_allreviews($id, $calculated_risk, $subject, $status, $scoring_metho
         echo "</div>\n";
         echo "</div>\n";
 }
-
-
 ?>
