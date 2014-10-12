@@ -396,7 +396,7 @@ function get_mitigate($id, $calculated_risk, $subject, $status, $scoring_method,
         echo "</div>\n";
         echo "<div class=\"span6\">\n";
         echo "<div class=\"well\">\n";
-        view_mitigation_details($mitigation_date, $planning_strategy, $mitigation_effort, $current_solution, $security_requirements, $security_recommendations);
+        view_review_details($id, $review_date, $reviewer, $review, $next_step, $next_review, $comments);
         echo "</div>\n";
         echo "</div>\n";
         echo "</div>\n";

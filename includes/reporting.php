@@ -959,7 +959,7 @@ function get_review_needed_table()
 		if (!preg_match('/\d{4}/', $review_status))
                 {
                 	echo "<tr>\n";
-                	echo "<td align=\"left\" width=\"50px\"><a href=\"../management/view.php?id=" . convert_id($risk_id) . "\">" . convert_id($risk_id) . "</a></td>\n";
+                	echo "<td align=\"left\" width=\"50px\"><a href=\"index.php?module=1&page=5&id=" . convert_id($risk_id) . "\">" . convert_id($risk_id) . "</a></td>\n";
 			echo "<td align=\"left\" width=\"150px\">" . $status . "</td>\n";
                 	echo "<td align=\"left\" width=\"300px\">" . $subject . "</td>\n";
                 	echo "<td align=\"center\" bgcolor=\"" . $color . "\" width=\"100px\">" . $calculated_risk . "</td>\n";

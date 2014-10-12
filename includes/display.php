@@ -142,16 +142,16 @@ function view_risk_details($submission_date, $subject, $reference_id, $regulatio
         echo "<br />\n";
         echo $lang['RiskAssessment'] .": \n";
 	echo "<br />\n";
-        echo "<textarea style=\"cursor: default;\" name=\"assessment\" cols=\"50\" rows=\"3\" id=\"assessment\" title=\"" . htmlentities(stripslashes($assessment), ENT_QUOTES, 'UTF-8', false) . "\" disabled=\"disabled\">" . htmlentities($assessment, ENT_QUOTES, 'UTF-8', false) . "</textarea>\n";
+        echo "<textarea style=\"cursor: default;\" name=\"assessment\" cols=\"50\" rows=\"3\" id=\"assessment\" title=\"" . htmlentities(stripslashes($assessment), ENT_QUOTES, 'UTF-8', false) . "\" disabled=\"disabled\">" . htmlentities(stripslashes($assessment), ENT_QUOTES, 'UTF-8', false) . "</textarea>\n";
 	echo "<br />\n";
         echo $lang['AdditionalNotes'] .": \n";
 	echo "<br />\n";
-        echo "<textarea style=\"cursor: default;\" name=\"notes\" cols=\"50\" rows=\"3\" id=\"notes\" title=\"" . htmlentities(stripslashes($notes), ENT_QUOTES, 'UTF-8', false) . "\" disabled=\"disabled\">" . htmlentities($notes, ENT_QUOTES, 'UTF-8', false) . "</textarea>\n";
+        echo "<textarea style=\"cursor: default;\" name=\"notes\" cols=\"50\" rows=\"3\" id=\"notes\" title=\"" . htmlentities(stripslashes($notes), ENT_QUOTES, 'UTF-8', false) . "\" disabled=\"disabled\">" . htmlentities(stripslashes($notes), ENT_QUOTES, 'UTF-8', false) . "</textarea>\n";
 
 	// If the page is the view.php page
-	if (basename($_SERVER['PHP_SELF']) == "index.php")
+	if (basename($_SERVER['PHP_SELF']) == "index.php" && $_GET['page'] == '5')
 	{
-		// Give the option to edit the risk details
+                // Give the option to edit the risk details
         	echo "<div class=\"form-actions\">\n";
         	echo "<button type=\"submit\" name=\"edit_details\" class=\"btn btn-primary\">". $lang['EditDetails'] ."</button>\n";
         	echo "</div>\n";
@@ -250,7 +250,7 @@ function view_mitigation_details($mitigation_date, $planning_strategy, $mitigati
         echo "<textarea style=\"cursor: default;\" name=\"security_recommendations\" cols=\"50\" rows=\"3\" id=\"security_recommendations\" title=\"" . htmlentities(stripslashes($security_recommendations), ENT_QUOTES, 'UTF-8', false) . "\" disabled=\"disabled\">" . htmlentities(stripslashes($security_recommendations), ENT_QUOTES, 'UTF-8', false) . "</textarea>\n";
 
         // If the page is the view.php page
-        if (basename($_SERVER['PHP_SELF']) == "index.php")
+        if (basename($_SERVER['PHP_SELF']) == "index.php" && $_GET['page'] == '5')
         {
                 // Give the option to edit the mitigation details
 	        echo "<div class=\"form-actions\">\n";
